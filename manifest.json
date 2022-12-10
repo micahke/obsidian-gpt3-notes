@@ -1,11 +1,11 @@
 {
-	"id": "obsidian-sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-gp3-nots",
+	"name": "GPT-3 Notes",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "This is a simple plugin that allows you to crete a fast note on any subject using OpenAI's GPT-3 model.",
+	"author": "Micah Elias",
+	"authorUrl": "https://www.micahelias.com",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
