@@ -1,6 +1,6 @@
 # Obsidian GPT-3 Notes
 
-![build](https://github.com/yumyumcurryman/obsidian-gpt3-notes/actions/workflows/build.yml/badge.svg)
+![build](https://github.com/micahke/obsidian-gpt3-notes/actions/workflows/build.yml/badge.svg)
 
 This plugin improves your Obsidian workflow by helping you generate notes using OpenAI's GPT-3 language model. The plugin also has support for older language models as well.
 
