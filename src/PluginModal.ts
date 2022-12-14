@@ -3,6 +3,7 @@ import GPT3Notes from "main";
 import {
 	ButtonComponent,
 	DropdownComponent,
+	MarkdownView,
 	Modal,
 	Notice,
 	Setting,
@@ -112,6 +113,18 @@ export class PluginModal extends Modal {
 	}
 
 	async handleGenerateClick() {
+		const view =
+			this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+
+		if (!view) {
+			new Notice(
+				"You must have a Markdown file open to complete this action."
+			);
+			this.generateButton.setDisabled(false);
+			this.generateButton.setButtonText("Generate Notes");
+			return;
+		}
+
 		const params: GPT3ModelParams = {
 			prompt: this.prompt,
 			temperature: this.plugin.settings.temperature / 10,

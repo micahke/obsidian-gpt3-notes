@@ -3,7 +3,7 @@
 	"name": "GPT-3 Notes",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a simple plugin that allows you to crete a fast note on any subject using OpenAI's GPT-3 model.",
+	"description": "Create a note using OpenAI's GPT-3 language model.",
 	"author": "Micah Elias",
 	"authorUrl": "https://www.micahelias.com",
 	"fundingUrl": "https://obsidian.md/pricing",
