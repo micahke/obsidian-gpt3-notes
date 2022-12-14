@@ -28,6 +28,8 @@ GPT-3 is capable of generating many different types of notes. As of now, the out
 
 > Write an essay outline about
 
+![usage](https://github.com/micahke/obsidian-gpt3-notes/raw/master/example.gif)
+
 ## Contributing
 
 I'm not very smart so community help would go a long way in making sure new ideas can be added to the plugin. To get started, clone the repo to the plugins folder in an Obsidian vault. You can find more about this on the main Obsidian developer's page. To install dependencies, run:
