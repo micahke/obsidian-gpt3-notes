@@ -27,7 +27,7 @@ export default class SettingsView extends PluginSettingTab {
 		containerEl.createEl("h1", { text: "GPT-3 Settings" });
 
 		new Setting(containerEl)
-			.setName("OpenAI Token")
+			.setName("OpenAI API Key")
 			.setDesc("The token generated in your OpenAI dashboard.")
 			.addText((text: TextComponent) => {
 				text.setPlaceholder("Token")
