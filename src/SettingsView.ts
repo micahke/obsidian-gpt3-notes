@@ -2,6 +2,7 @@ import GPT3Notes from "main";
 import {
 	ButtonComponent,
 	DropdownComponent,
+	Notice,
 	PluginSettingTab,
 	Setting,
 	TextComponent,
@@ -55,6 +56,19 @@ export default class SettingsView extends PluginSettingTab {
 					this.plugin.settings.model = change;
 				});
 				dropdown.setValue(this.plugin.settings.model);
+			});
+
+		new Setting(containerEl)
+			.setName("Delete history")
+			.setDesc("This will purge your prompt history")
+			.addButton((button: ButtonComponent) => {
+				button.setButtonText("Delete");
+				button.onClick((evt: MouseEvent) => {
+					try {
+						this.plugin.history_handler.reset();
+						new Notice("History reset");
+					} catch (e: any) {}
+				});
 			});
 	}
 }

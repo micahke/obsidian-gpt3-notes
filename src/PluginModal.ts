@@ -10,7 +10,7 @@ import {
 	TextAreaComponent,
 } from "obsidian";
 import { models } from "SettingsView";
-import { GPT3ModelParams } from "types";
+import { GPT3ModelParams, GPTHistoryItem } from "types";
 import data from "../prompts.json";
 
 export class PluginModal extends Modal {
@@ -30,6 +30,28 @@ export class PluginModal extends Modal {
 		const container = contentEl.createDiv();
 		container.style.width = "100%";
 		container.style.marginTop = "20px";
+
+		let history_dropdown = new DropdownComponent(container);
+		history_dropdown.selectEl.style.width = "100%";
+		let history = this.plugin.settings.promptHistory;
+		history_dropdown.addOption("History", "History");
+		for (let i = history.length - 1; i >= 0; i--) {
+			if (history[i].prompt.length > 80) {
+				history_dropdown.addOption(
+					`${i}`,
+					history[i].prompt.slice(0, 80) + "..."
+				);
+				continue;
+			}
+			history_dropdown.addOption(`${i}`, history[i].prompt);
+		}
+		history_dropdown.onChange((change) => {
+			try {
+				const index = parseInt(change);
+				this.useHistoryItem(history[index]);
+				history_dropdown.setValue("History");
+			} catch (e: any) {}
+		});
 
 		const dropdownsDiv = container.createDiv();
 		dropdownsDiv.style.width = "100%";
@@ -140,6 +162,11 @@ export class PluginModal extends Modal {
 		return dropdown;
 	}
 
+	useHistoryItem(item: GPTHistoryItem) {
+		this.promptField.setValue(item.prompt);
+		this.prompt = item.prompt;
+	}
+
 	async handleGenerateClick() {
 		const view =
 			this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
@@ -175,6 +202,13 @@ export class PluginModal extends Modal {
 			this.generateButton.setButtonText("Generate Notes");
 			return;
 		}
+
+		this.plugin.history_handler.push({
+			prompt: params.prompt,
+			temperature: params.temperature,
+			tokens: params.tokens,
+		});
+
 		this.close();
 		this.plugin.showPreviewModal(params, response);
 	}
