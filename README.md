@@ -28,6 +28,8 @@ GPT-3 is capable of generating many different types of notes. As of now, the out
 
 > Write an essay outline about
 
+Loading time has been cut out a bit but here's an example:
+
 ![usage](https://github.com/micahke/obsidian-gpt3-notes/raw/master/example.gif)
 
 ## Contributing
