@@ -7,16 +7,17 @@ import {
 	Modal,
 	Notice,
 	Setting,
-	SliderComponent,
 	TextAreaComponent,
 } from "obsidian";
 import { models } from "SettingsView";
 import { GPT3ModelParams } from "types";
+import data from "../prompts.json";
 
 export class PluginModal extends Modal {
 	prompt: string;
 
 	generateButton: ButtonComponent;
+	promptField: TextAreaComponent;
 
 	constructor(private plugin: GPT3Notes) {
 		super(plugin.app);
@@ -30,14 +31,24 @@ export class PluginModal extends Modal {
 		container.style.width = "100%";
 		container.style.marginTop = "20px";
 
-		const promptField = new TextAreaComponent(container);
-		promptField.inputEl.style.width = "100%";
-		promptField.inputEl.style.minHeight = "100px";
-		promptField.inputEl.style.width = "100%";
-		promptField.inputEl.style.padding = "10px";
-		promptField.inputEl.style.fontSize = "16px";
-		promptField.setPlaceholder("Enter your prompt...");
-		promptField.onChange((change) => {
+		const dropdownsDiv = container.createDiv();
+		dropdownsDiv.style.width = "100%";
+		dropdownsDiv.style.display = "flex";
+		// dropdownsDiv.style.justifyContent = "space-between";
+		dropdownsDiv.style.gap = "10px";
+		dropdownsDiv.style.margin = "20px 0";
+
+		this.tokenSection(dropdownsDiv, "Prefix", data.prefix);
+		this.tokenSection(dropdownsDiv, "Postfix", data.postfix);
+
+		this.promptField = new TextAreaComponent(container);
+		this.promptField.inputEl.style.width = "100%";
+		this.promptField.inputEl.style.minHeight = "100px";
+		this.promptField.inputEl.style.width = "100%";
+		this.promptField.inputEl.style.padding = "10px";
+		this.promptField.inputEl.style.fontSize = "16px";
+		this.promptField.setPlaceholder("Enter your prompt...");
+		this.promptField.onChange((change) => {
 			this.prompt = change;
 		});
 
@@ -110,6 +121,23 @@ export class PluginModal extends Modal {
 				"rbga(33, 140, 116, 0.5)";
 			this.handleGenerateClick();
 		});
+	}
+
+	tokenSection(container: HTMLDivElement, label: string, options: string[]) {
+		const dropdown = new DropdownComponent(container);
+		dropdown.addOption(label, label);
+		for (let i in options) {
+			dropdown.addOption(options[i], options[i]);
+		}
+		dropdown.onChange((change) => {
+			const newValue = this.promptField.getValue() + change + " ";
+
+			this.promptField.setValue(newValue);
+			this.promptField.inputEl.focus();
+			this.prompt = newValue;
+			dropdown.setValue(label);
+		});
+		return dropdown;
 	}
 
 	async handleGenerateClick() {

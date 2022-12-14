@@ -1,0 +1,19 @@
+{
+	"prefix": [
+		"Write an essay",
+		"Write dashed notes",
+		"Write bullet notes",
+		"Write paragraphs",
+		"Write an article",
+		"Create a manual",
+		"Create an outline",
+		"Write a summary",
+		"Write a program"
+	],
+	"postfix": [
+		"with sources",
+		"with footnotes",
+		"with comments",
+		"with quotes"
+	]
+}
