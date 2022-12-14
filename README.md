@@ -2,6 +2,8 @@
 
 ![build](https://github.com/micahke/obsidian-gpt3-notes/actions/workflows/build.yml/badge.svg)
 
+<a href="https://www.buymeacoffee.com/mkelias" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 This plugin improves your Obsidian workflow by helping you generate notes using OpenAI's GPT-3 language model. The plugin also has support for older language models as well.
 
 ## Setup
