@@ -21,15 +21,7 @@ export class PreviewModal extends Modal {
 		contentEl.setText("Preview GPT-3 Note");
 
 		const container = contentEl.createDiv();
-		container.style.border = "1px solid gray";
-		container.style.borderRadius = "5px";
-		container.style.paddingLeft = "10px";
-		container.style.paddingRight = "10px";
-		container.style.marginTop = "20px";
-		container.style.width = "100%";
-		container.style.minHeight = "300px";
-		container.style.maxHeight = "600px";
-		container.style.overflowY = "scroll";
+		container.className = "gpt_preview-container";
 
 		const text: string = this.modelResponse.choices[0].text as string;
 		const tokens = text.split("\n");
@@ -39,10 +31,7 @@ export class PreviewModal extends Modal {
 			});
 		}
 		const buttonContainer = contentEl.createDiv();
-		buttonContainer.style.display = "flex";
-		buttonContainer.style.justifyContent = "flex-end";
-		buttonContainer.style.gap = "10px";
-		buttonContainer.style.marginTop = "15px";
+		buttonContainer.className = "gpt_preview-button-container";
 
 		const cancelButton = new ButtonComponent(buttonContainer);
 		cancelButton.buttonEl.style.backgroundColor = "#b33939";

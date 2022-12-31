@@ -28,11 +28,14 @@ export class PluginModal extends Modal {
 		contentEl.setText("Create a GPT-3 Note");
 
 		const container = contentEl.createDiv();
-		container.style.width = "100%";
-		container.style.marginTop = "20px";
+		container.className = "gpt_plugin-container";
+		// container.style.width = "100%";
+		// container.style.marginTop = "20px";
 
 		let history_dropdown = new DropdownComponent(container);
-		history_dropdown.selectEl.style.width = "100%";
+		// history_dropdown.selectEl.style.width = "100%";
+		history_dropdown.selectEl.className = "gpt_history-dropdown";
+
 		let history = this.plugin.settings.promptHistory;
 		history_dropdown.addOption("History", "History");
 		for (let i = history.length - 1; i >= 0; i--) {
@@ -54,21 +57,14 @@ export class PluginModal extends Modal {
 		});
 
 		const dropdownsDiv = container.createDiv();
-		dropdownsDiv.style.width = "100%";
-		dropdownsDiv.style.display = "flex";
-		// dropdownsDiv.style.justifyContent = "space-between";
-		dropdownsDiv.style.gap = "10px";
-		dropdownsDiv.style.margin = "20px 0";
+		dropdownsDiv.className = "gpt_dropdowns-div";
 
 		this.tokenSection(dropdownsDiv, "Prefix", data.prefix);
 		this.tokenSection(dropdownsDiv, "Postfix", data.postfix);
 
 		this.promptField = new TextAreaComponent(container);
-		this.promptField.inputEl.style.width = "100%";
-		this.promptField.inputEl.style.minHeight = "100px";
-		this.promptField.inputEl.style.width = "100%";
-		this.promptField.inputEl.style.padding = "10px";
-		this.promptField.inputEl.style.fontSize = "16px";
+		this.promptField.inputEl.className = "gpt_prompt-field";
+
 		this.promptField.setPlaceholder("Enter your prompt...");
 		this.promptField.onChange((change) => {
 			this.prompt = change;
@@ -92,7 +88,7 @@ export class PluginModal extends Modal {
 					this.plugin.saveSettings();
 				});
 			});
-		tempSetting.settingEl.style.marginTop = "20px";
+		tempSetting.controlEl.className = "gpt_temp-setting";
 
 		const tokenSetting = new Setting(container)
 			.setName("Tokens")
@@ -105,8 +101,6 @@ export class PluginModal extends Modal {
 					this.plugin.saveSettings();
 				});
 			});
-
-		tempSetting.settingEl.style.marginTop = "20px";
 
 		new Setting(container)
 			.setName("OpenAI Model")
@@ -123,18 +117,17 @@ export class PluginModal extends Modal {
 			});
 
 		const buttonContainer = container.createDiv();
-		buttonContainer.style.display = "flex";
-		buttonContainer.style.justifyContent = "flex-end";
-		buttonContainer.style.gap = "10px";
-		buttonContainer.style.marginTop = "15px";
+		buttonContainer.className = "gpt_button-container";
 
 		const cancelButton = new ButtonComponent(buttonContainer);
+		cancelButton.buttonEl.className = "gpt_cancel-button";
 		cancelButton.buttonEl.style.backgroundColor = "#b33939";
 		cancelButton.setButtonText("Cancel").onClick(() => {
 			this.close();
 		});
 
 		this.generateButton = new ButtonComponent(buttonContainer);
+		this.generateButton.buttonEl.className = "gpt_generate-button";
 		this.generateButton.buttonEl.style.backgroundColor = "#218c74";
 		this.generateButton.setButtonText("Generate Notes").onClick(() => {
 			this.generateButton.setButtonText("Loading...");
