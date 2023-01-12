@@ -47,7 +47,11 @@ export class PreviewModal extends Modal {
 
 			if (view) {
 				this.close();
-				view.editor.replaceSelection(text.slice(2, text.length));
+				let newText =
+					view.editor.getSelection() +
+					"\n" +
+					text.slice(2, text.length);
+				view.editor.replaceSelection(newText);
 			}
 		});
 	}
