@@ -1,0 +1,64 @@
+/* +++++++++++++++++ MAIN PLUGIN MODAL +++++++++++++++ */
+
+.gpt_plugin-container {
+	width: 100%;
+	margin-top: 20px;
+}
+
+.gpt_history-dropdown {
+	width: 100%;
+}
+
+.gpt_dropdowns-div {
+	width: 100%;
+	display: flex;
+	gap: 10px;
+	margin: 20px 0;
+}
+
+.gpt_prompt-field {
+	width: 100%;
+	min-height: 100px;
+	padding: 10px;
+	font-size: 16px;
+}
+
+.gpt_temp-setting {
+	margin-top: 20px;
+}
+
+.gpt_button-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 15px;
+}
+
+.gpt_cancel-button {
+	background-color: #b33939;
+}
+
+.gpt_generate-button {
+	background-color: #218c74;
+}
+
+/* ++++++++++++++ PREVIEW MODAL +++++++++++++++ */
+
+.gpt_preview-container {
+	border: 1px solid gray;
+	border-radius: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-top: 20px;
+	width: 100%;
+	min-height: 300px;
+	max-height: 600px;
+	overflow-y: scroll;
+}
+
+.gpt_preview-button-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 15px;
+}
