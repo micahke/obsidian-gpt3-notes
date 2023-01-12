@@ -3,6 +3,7 @@ import GPT3Notes from "main";
 import {
 	ButtonComponent,
 	DropdownComponent,
+	ToggleComponent,
 	MarkdownView,
 	Modal,
 	Notice,
@@ -17,6 +18,7 @@ export class PluginModal extends Modal {
 	prompt: string;
 	processedPrompt: string;
 
+	replaceTokensInHistory: boolean;
 	generateButton: ButtonComponent;
 	promptField: TextAreaComponent;
 
@@ -45,23 +47,33 @@ export class PluginModal extends Modal {
 		container.className = "gpt_plugin-container";
 		// container.style.width = "100%";
 		// container.style.marginTop = "20px";
+		const history_toggle_container = container.createDiv({
+			cls: "gpt_history-container",
+			text: "Replace tokens in history",
+		});
+		history_toggle_container.style.fontSize = "10px";
+		history_toggle_container.style.display = "flex";
+		history_toggle_container.style.alignItems = "center";
+		history_toggle_container.style.padding = "10px 0";
+		const history_toggle = new ToggleComponent(history_toggle_container);
 
-		let history_dropdown = new DropdownComponent(container);
+		const history_dropdown = new DropdownComponent(container);
 		// history_dropdown.selectEl.style.width = "100%";
 		history_dropdown.selectEl.className = "gpt_history-dropdown";
 
 		let history = this.plugin.settings.promptHistory;
-		history_dropdown.addOption("History", "History");
-		for (let i = history.length - 1; i >= 0; i--) {
-			if (history[i].prompt.length > 80) {
-				history_dropdown.addOption(
-					`${i}`,
-					history[i].prompt.slice(0, 80) + "..."
-				);
-				continue;
-			}
-			history_dropdown.addOption(`${i}`, history[i].prompt);
-		}
+
+		this.generateHistoryOptions(history_dropdown, history);
+		history_toggle.onChange((change) => {
+			this.replaceTokensInHistory = change;
+			history_dropdown.selectEl
+				.querySelectorAll("option")
+				.forEach((option) => {
+					history_dropdown.selectEl.removeChild(option);
+				});
+			this.generateHistoryOptions(history_dropdown, history);
+		});
+
 		history_dropdown.onChange((change) => {
 			try {
 				const index = parseInt(change);
@@ -174,9 +186,30 @@ export class PluginModal extends Modal {
 		return dropdown;
 	}
 
+	generateHistoryOptions(
+		history_dropdown: DropdownComponent,
+		history: GPTHistoryItem[]
+	) {
+		history_dropdown.addOption("History", "History");
+		for (let i = history.length - 1; i >= 0; i--) {
+			const prompt =
+				(this.replaceTokensInHistory
+					? history[i].processedPrompt
+					: history[i].prompt) || history[i].prompt;
+			if (prompt.length > 80) {
+				history_dropdown.addOption(`${i}`, prompt.slice(0, 80) + "...");
+				continue;
+			}
+			history_dropdown.addOption(`${i}`, prompt);
+		}
+	}
+
 	useHistoryItem(item: GPTHistoryItem) {
-		this.promptField.setValue(item.prompt);
-		this.prompt = item.prompt;
+		const prompt = this.replaceTokensInHistory
+			? item.processedPrompt
+			: item.prompt;
+		this.promptField.setValue(prompt);
+		this.prompt = prompt;
 	}
 
 	replaceToken(
@@ -244,7 +277,8 @@ export class PluginModal extends Modal {
 		}
 
 		this.plugin.history_handler.push({
-			prompt: params.prompt,
+			prompt: this.prompt,
+			processedPrompt: this.processedPrompt,
 			temperature: params.temperature,
 			tokens: params.tokens,
 		});
