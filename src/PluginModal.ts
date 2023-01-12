@@ -15,6 +15,7 @@ import data from "../prompts.json";
 
 export class PluginModal extends Modal {
 	prompt: string;
+	processedPrompt: string;
 
 	generateButton: ButtonComponent;
 	promptField: TextAreaComponent;
@@ -160,6 +161,36 @@ export class PluginModal extends Modal {
 		this.prompt = item.prompt;
 	}
 
+	replaceToken(match: RegExpMatchArray, prompt: string, replacementText: string) {
+		const matchIndex = match.index || 0;
+		return prompt.substring(0, matchIndex) + replacementText + prompt.substring(matchIndex + match[0].length)
+	}
+
+	replacementTokens = {
+		selection: (match: RegExpMatchArray, prompt: string) => {
+			const view = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+			if (view) {
+				const selection = view.editor.getSelection();
+				prompt = this.replaceToken(match, prompt, selection);
+			}
+
+			return prompt;
+		},
+	}
+
+	processReplacementTokens(prompt: string) {
+		const tokenRegex = /\{\{(.*?)\}\}/g;
+		const matches = [...prompt.matchAll(tokenRegex)];
+		matches.forEach((match) => {
+			const token = match[1] as keyof typeof this.replacementTokens;
+			if (this.replacementTokens[token]) {
+				prompt = this.replacementTokens[token](match, prompt);
+			}
+		});
+
+		return prompt;
+	}
+
 	async handleGenerateClick() {
 		const view =
 			this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
@@ -173,8 +204,10 @@ export class PluginModal extends Modal {
 			return;
 		}
 
+		this.processedPrompt = this.processReplacementTokens(this.prompt);
+
 		const params: GPT3ModelParams = {
-			prompt: this.prompt,
+			prompt: this.processedPrompt,
 			temperature: this.plugin.settings.temperature / 10,
 			tokens: this.plugin.settings.tokens,
 			model: this.plugin.settings.model,
