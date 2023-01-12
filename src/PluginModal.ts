@@ -51,10 +51,6 @@ export class PluginModal extends Modal {
 			cls: "gpt_history-container",
 			text: "Replace tokens in history",
 		});
-		history_toggle_container.style.fontSize = "10px";
-		history_toggle_container.style.display = "flex";
-		history_toggle_container.style.alignItems = "center";
-		history_toggle_container.style.padding = "10px 0";
 		const history_toggle = new ToggleComponent(history_toggle_container);
 
 		const history_dropdown = new DropdownComponent(container);

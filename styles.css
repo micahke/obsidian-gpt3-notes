@@ -62,3 +62,11 @@
 	gap: 10px;
 	margin-top: 15px;
 }
+
+.gpt_history-container {
+	font-size: 10px;
+	display: flex;
+	align-items: center;
+	padding: 10px 0;
+	gap: 10px;
+}
