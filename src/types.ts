@@ -6,6 +6,7 @@ export type GPT3ModelParams = {
 };
 export type GPTHistoryItem = {
 	prompt: string;
+	processedPrompt: string;
 	temperature: number;
 	tokens: number;
 };

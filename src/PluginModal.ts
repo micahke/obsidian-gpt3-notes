@@ -3,6 +3,7 @@ import GPT3Notes from "main";
 import {
 	ButtonComponent,
 	DropdownComponent,
+	ToggleComponent,
 	MarkdownView,
 	Modal,
 	Notice,
@@ -15,9 +16,24 @@ import data from "../prompts.json";
 
 export class PluginModal extends Modal {
 	prompt: string;
+	processedPrompt: string;
 
+	replaceTokensInHistory: boolean;
 	generateButton: ButtonComponent;
 	promptField: TextAreaComponent;
+
+	replacementTokens = {
+		selection: (match: RegExpMatchArray, prompt: string) => {
+			const view =
+				this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+			if (view) {
+				const selection = view.editor.getSelection();
+				prompt = this.replaceToken(match, prompt, selection);
+			}
+
+			return prompt;
+		},
+	};
 
 	constructor(private plugin: GPT3Notes) {
 		super(plugin.app);
@@ -31,23 +47,33 @@ export class PluginModal extends Modal {
 		container.className = "gpt_plugin-container";
 		// container.style.width = "100%";
 		// container.style.marginTop = "20px";
+		const history_toggle_container = container.createDiv({
+			cls: "gpt_history-container",
+			text: "Replace tokens in history",
+		});
+		history_toggle_container.style.fontSize = "10px";
+		history_toggle_container.style.display = "flex";
+		history_toggle_container.style.alignItems = "center";
+		history_toggle_container.style.padding = "10px 0";
+		const history_toggle = new ToggleComponent(history_toggle_container);
 
-		let history_dropdown = new DropdownComponent(container);
+		const history_dropdown = new DropdownComponent(container);
 		// history_dropdown.selectEl.style.width = "100%";
 		history_dropdown.selectEl.className = "gpt_history-dropdown";
 
 		let history = this.plugin.settings.promptHistory;
-		history_dropdown.addOption("History", "History");
-		for (let i = history.length - 1; i >= 0; i--) {
-			if (history[i].prompt.length > 80) {
-				history_dropdown.addOption(
-					`${i}`,
-					history[i].prompt.slice(0, 80) + "..."
-				);
-				continue;
-			}
-			history_dropdown.addOption(`${i}`, history[i].prompt);
-		}
+
+		this.generateHistoryOptions(history_dropdown, history);
+		history_toggle.onChange((change) => {
+			this.replaceTokensInHistory = change;
+			history_dropdown.selectEl
+				.querySelectorAll("option")
+				.forEach((option) => {
+					history_dropdown.selectEl.removeChild(option);
+				});
+			this.generateHistoryOptions(history_dropdown, history);
+		});
+
 		history_dropdown.onChange((change) => {
 			try {
 				const index = parseInt(change);
@@ -61,6 +87,11 @@ export class PluginModal extends Modal {
 
 		this.tokenSection(dropdownsDiv, "Prefix", data.prefix);
 		this.tokenSection(dropdownsDiv, "Postfix", data.postfix);
+		this.tokenSection(
+			dropdownsDiv,
+			"Tokens",
+			Object.keys(this.replacementTokens).map((key) => `{{${key}}}`)
+		);
 
 		this.promptField = new TextAreaComponent(container);
 		this.promptField.inputEl.className = "gpt_prompt-field";
@@ -155,9 +186,56 @@ export class PluginModal extends Modal {
 		return dropdown;
 	}
 
+	generateHistoryOptions(
+		history_dropdown: DropdownComponent,
+		history: GPTHistoryItem[]
+	) {
+		history_dropdown.addOption("History", "History");
+		for (let i = history.length - 1; i >= 0; i--) {
+			const prompt =
+				(this.replaceTokensInHistory
+					? history[i].processedPrompt
+					: history[i].prompt) || history[i].prompt;
+			if (prompt.length > 80) {
+				history_dropdown.addOption(`${i}`, prompt.slice(0, 80) + "...");
+				continue;
+			}
+			history_dropdown.addOption(`${i}`, prompt);
+		}
+	}
+
 	useHistoryItem(item: GPTHistoryItem) {
-		this.promptField.setValue(item.prompt);
-		this.prompt = item.prompt;
+		const prompt = this.replaceTokensInHistory
+			? item.processedPrompt
+			: item.prompt;
+		this.promptField.setValue(prompt);
+		this.prompt = prompt;
+	}
+
+	replaceToken(
+		match: RegExpMatchArray,
+		prompt: string,
+		replacementText: string
+	) {
+		const matchIndex = match.index || 0;
+		return (
+			prompt.substring(0, matchIndex) +
+			replacementText +
+			prompt.substring(matchIndex + match[0].length)
+		);
+	}
+
+	processReplacementTokens(prompt: string) {
+		const tokenRegex = /\{\{(.*?)\}\}/g;
+		const matches = [...prompt.matchAll(tokenRegex)];
+		matches.forEach((match) => {
+			const token = match[1] as keyof typeof this.replacementTokens;
+			if (this.replacementTokens[token]) {
+				prompt = this.replacementTokens[token](match, prompt);
+			}
+		});
+
+		return prompt;
 	}
 
 	async handleGenerateClick() {
@@ -173,8 +251,10 @@ export class PluginModal extends Modal {
 			return;
 		}
 
+		this.processedPrompt = this.processReplacementTokens(this.prompt);
+
 		const params: GPT3ModelParams = {
-			prompt: this.prompt,
+			prompt: this.processedPrompt,
 			temperature: this.plugin.settings.temperature / 10,
 			tokens: this.plugin.settings.tokens,
 			model: this.plugin.settings.model,
@@ -197,7 +277,8 @@ export class PluginModal extends Modal {
 		}
 
 		this.plugin.history_handler.push({
-			prompt: params.prompt,
+			prompt: this.prompt,
+			processedPrompt: this.processedPrompt,
 			temperature: params.temperature,
 			tokens: params.tokens,
 		});
