@@ -20,6 +20,19 @@ export class PluginModal extends Modal {
 	generateButton: ButtonComponent;
 	promptField: TextAreaComponent;
 
+	replacementTokens = {
+		selection: (match: RegExpMatchArray, prompt: string) => {
+			const view =
+				this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+			if (view) {
+				const selection = view.editor.getSelection();
+				prompt = this.replaceToken(match, prompt, selection);
+			}
+
+			return prompt;
+		},
+	};
+
 	constructor(private plugin: GPT3Notes) {
 		super(plugin.app);
 	}
@@ -62,6 +75,11 @@ export class PluginModal extends Modal {
 
 		this.tokenSection(dropdownsDiv, "Prefix", data.prefix);
 		this.tokenSection(dropdownsDiv, "Postfix", data.postfix);
+		this.tokenSection(
+			dropdownsDiv,
+			"Tokens",
+			Object.keys(this.replacementTokens).map((key) => `{{${key}}}`)
+		);
 
 		this.promptField = new TextAreaComponent(container);
 		this.promptField.inputEl.className = "gpt_prompt-field";
@@ -161,21 +179,17 @@ export class PluginModal extends Modal {
 		this.prompt = item.prompt;
 	}
 
-	replaceToken(match: RegExpMatchArray, prompt: string, replacementText: string) {
+	replaceToken(
+		match: RegExpMatchArray,
+		prompt: string,
+		replacementText: string
+	) {
 		const matchIndex = match.index || 0;
-		return prompt.substring(0, matchIndex) + replacementText + prompt.substring(matchIndex + match[0].length)
-	}
-
-	replacementTokens = {
-		selection: (match: RegExpMatchArray, prompt: string) => {
-			const view = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
-			if (view) {
-				const selection = view.editor.getSelection();
-				prompt = this.replaceToken(match, prompt, selection);
-			}
-
-			return prompt;
-		},
+		return (
+			prompt.substring(0, matchIndex) +
+			replacementText +
+			prompt.substring(matchIndex + match[0].length)
+		);
 	}
 
 	processReplacementTokens(prompt: string) {
