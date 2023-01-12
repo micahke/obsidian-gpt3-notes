@@ -8,6 +8,8 @@ import GPT3Notes from "main";
 import { GPT3ModelParams } from "types";
 
 export class PreviewModal extends Modal {
+	previewText: string;
+
 	constructor(
 		private plugin: GPT3Notes,
 		private modelParams: GPT3ModelParams,
@@ -24,12 +26,15 @@ export class PreviewModal extends Modal {
 		container.className = "gpt_preview-container";
 
 		const text: string = this.modelResponse.choices[0].text as string;
-		const tokens = text.split("\n");
-		for (let i = 0; i < tokens.length; i++) {
-			container.createEl("p", {
-				text: tokens[i],
-			});
-		}
+		this.previewText = text.slice(2, text.length);
+
+		const previewTextArea = new TextAreaComponent(container);
+		previewTextArea.inputEl.className = "gpt_preview-textarea";
+		previewTextArea.setValue(this.previewText);
+		previewTextArea.onChange((change: string) => {
+			this.previewText = change;
+		});
+
 		const buttonContainer = contentEl.createDiv();
 		buttonContainer.className = "gpt_preview-button-container";
 
@@ -48,9 +53,9 @@ export class PreviewModal extends Modal {
 			if (view) {
 				this.close();
 				let newText =
-					view.editor.getSelection() +
-					"\n" +
-					text.slice(2, text.length);
+					view.editor.getSelection().length > 0
+						? view.editor.getSelection() + "\n\n" + this.previewText
+						: this.previewText;
 				view.editor.replaceSelection(newText);
 			}
 		});

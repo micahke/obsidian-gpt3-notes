@@ -45,7 +45,7 @@
 /* ++++++++++++++ PREVIEW MODAL +++++++++++++++ */
 
 .gpt_preview-container {
-	border: 1px solid gray;
+	/* border: 1px solid gray; */
 	border-radius: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -69,4 +69,12 @@
 	align-items: center;
 	padding: 10px 0;
 	gap: 10px;
+}
+
+.gpt_preview-textarea {
+	width: 100%;
+	margin-top: 10px;
+	min-height: 500px;
+	font-size: 0.9rem;
+	padding: 10px;
 }
