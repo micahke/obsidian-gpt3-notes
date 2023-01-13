@@ -6,8 +6,12 @@ export class GPT3Model {
 
 	static async generate(
 		token: string,
-		params: GPT3ModelParams
+		params: GPT3ModelParams,
+		retry?: number
 	): Promise<any> {
+		if (!retry) {
+			retry = 0;
+		}
 		const request_param: RequestUrlParam = {
 			url: "https://api.openai.com/v1/completions",
 			method: "POST",
@@ -29,6 +33,9 @@ export class GPT3Model {
 			const data = JSON.parse(response_raw);
 			return data;
 		} catch (e: any) {
+			if (retry < 5) {
+				return this.generate(token, params, retry + 1);
+			}
 			new Notice(
 				"There was an error. Please check your token or try again."
 			);
