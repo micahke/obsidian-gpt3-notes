@@ -10,7 +10,6 @@ export class GPT3Model {
 	): Promise<any> {
 		const request_param: RequestUrlParam = {
 			url: "https://api.openai.com/v1/completions",
-			contentType: "application/json",
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -29,7 +28,7 @@ export class GPT3Model {
 
 			const data = JSON.parse(response_raw);
 			return data;
-		} catch (e) {
+		} catch (e: any) {
 			new Notice(
 				"There was an error. Please check your token or try again."
 			);

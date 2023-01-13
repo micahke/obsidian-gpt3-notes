@@ -33,9 +33,9 @@ export default class SettingsView extends PluginSettingTab {
 			.addText((text: TextComponent) => {
 				text.setPlaceholder("Token")
 					.setValue(this.plugin.settings.token || "")
-					.onChange(async (change) => {
+					.onChange((change) => {
 						this.plugin.settings.token = change;
-						await this.plugin.saveSettings();
+						this.plugin.saveSettings();
 					});
 			})
 			.addButton((button: ButtonComponent) => {

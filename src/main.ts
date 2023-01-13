@@ -37,6 +37,7 @@ export default class GPT3Notes extends Plugin {
 	// Executed when the app is first loaded
 	async onload() {
 		await this.loadSettings();
+		console.log(this.settings);
 
 		this.settings_view = new SettingsView(this);
 		this.command_handler = new CommandHandler(this);
