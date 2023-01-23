@@ -76,10 +76,8 @@ export default class SettingsView extends PluginSettingTab {
 			.setName("Custom Prefixes")
 			.setDesc("Set your custom prefixes, each on a separate line.")
 			.addTextArea((textArea: TextAreaComponent) => {
+				textArea.inputEl.className = "gpt_settings-text-area";
 				textArea.setPlaceholder("Prefixes");
-				textArea.inputEl.style.width = "100%";
-				textArea.inputEl.style.maxWidth = "400px";
-				textArea.inputEl.style.minHeight = "18vh";
 				let text = "";
 				for (let i in this.plugin.settings.tokenParams.prefix) {
 					let prefix = this.plugin.settings.tokenParams.prefix[i];
@@ -97,10 +95,8 @@ export default class SettingsView extends PluginSettingTab {
 			.setName("Custom Postfixes")
 			.setDesc("Set your custom postfixes, each on a separate line.")
 			.addTextArea((textArea: TextAreaComponent) => {
+				textArea.inputEl.className = "gpt_settings-text-area";
 				textArea.setPlaceholder("Postfixes");
-				textArea.inputEl.style.width = "100%";
-				textArea.inputEl.style.maxWidth = "400px";
-				textArea.inputEl.style.minHeight = "18vh";
 				let text = "";
 				for (let i in this.plugin.settings.tokenParams.postfix) {
 					let postfix = this.plugin.settings.tokenParams.postfix[i];
