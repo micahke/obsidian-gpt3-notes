@@ -36,9 +36,16 @@ export class GPT3Model {
 			if (retry < 5) {
 				return this.generate(token, params, retry + 1);
 			}
-			new Notice(
-				"There was an error. Please check your token or try again."
-			);
+			console.log(e);
+			if (e.status === 429) {
+				new Notice("GPT-3 Rate limit error: please try again soon.");
+			} else if (e.status === 401) {
+				new Notice(
+					"Invalid token. Please change your token in the plugin settings."
+				);
+			} else {
+				new Notice("An error occurred while generating token");
+			}
 			return false;
 		}
 	}
