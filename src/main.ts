@@ -5,7 +5,8 @@ import { Editor, Menu, Modal, Notice, Plugin, View } from "obsidian";
 import { PluginModal } from "PluginModal";
 import { PreviewModal } from "PreviewModal";
 import SettingsView, { models } from "SettingsView";
-import { GPT3ModelParams, GPTHistoryItem } from "types";
+import { GPT3ModelParams, GPTHistoryItem, TokenParams } from "types";
+import data from "../prompts.json";
 
 // Remember to rename these classes and interfaces!
 
@@ -16,6 +17,7 @@ interface GPT3_NOTES_SETTINGS {
 	tokens: number;
 	temperature: number;
 	promptHistory: GPTHistoryItem[];
+	tokenParams: TokenParams;
 }
 
 const DEFAULT_SETTINGS: GPT3_NOTES_SETTINGS = {
@@ -25,6 +27,7 @@ const DEFAULT_SETTINGS: GPT3_NOTES_SETTINGS = {
 	tokens: 300,
 	temperature: 5,
 	promptHistory: [],
+	tokenParams: data as TokenParams,
 };
 
 export default class GPT3Notes extends Plugin {

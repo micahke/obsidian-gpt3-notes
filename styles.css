@@ -78,3 +78,9 @@
 	font-size: 0.9rem;
 	padding: 10px;
 }
+
+.gpt_settings-text-area {
+	width: 100%;
+	max-width: 400px;
+	min-height: 18vh;
+}

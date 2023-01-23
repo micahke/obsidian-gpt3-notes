@@ -5,6 +5,7 @@ import {
 	Notice,
 	PluginSettingTab,
 	Setting,
+	TextAreaComponent,
 	TextComponent,
 } from "obsidian";
 
@@ -70,5 +71,49 @@ export default class SettingsView extends PluginSettingTab {
 					} catch (e: any) {}
 				});
 			});
+
+		new Setting(containerEl)
+			.setName("Custom Prefixes")
+			.setDesc("Set your custom prefixes, each on a separate line.")
+			.addTextArea((textArea: TextAreaComponent) => {
+				textArea.inputEl.className = "gpt_settings-text-area";
+				textArea.setPlaceholder("Prefixes");
+				let text = "";
+				for (let i in this.plugin.settings.tokenParams.prefix) {
+					let prefix = this.plugin.settings.tokenParams.prefix[i];
+					text += `${prefix}\n`;
+				}
+				textArea.onChange((value: string) => {
+					let prefixes = this.parseParams(value);
+					this.plugin.settings.tokenParams.prefix = prefixes;
+					this.plugin.saveSettings();
+				});
+				textArea.setValue(text);
+			});
+
+		new Setting(containerEl)
+			.setName("Custom Postfixes")
+			.setDesc("Set your custom postfixes, each on a separate line.")
+			.addTextArea((textArea: TextAreaComponent) => {
+				textArea.inputEl.className = "gpt_settings-text-area";
+				textArea.setPlaceholder("Postfixes");
+				let text = "";
+				for (let i in this.plugin.settings.tokenParams.postfix) {
+					let postfix = this.plugin.settings.tokenParams.postfix[i];
+					text += `${postfix}\n`;
+				}
+				textArea.onChange((value: string) => {
+					let postfixes = this.parseParams(value);
+					this.plugin.settings.tokenParams.postfix = postfixes;
+					this.plugin.saveSettings();
+				});
+				textArea.setValue(text);
+			});
+	}
+
+	parseParams(text: string): string[] {
+		let res = text.split("\n");
+		res.remove("");
+		return res;
 	}
 }
