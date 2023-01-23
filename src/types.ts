@@ -10,3 +10,8 @@ export type GPTHistoryItem = {
 	temperature: number;
 	tokens: number;
 };
+
+export type TokenParams = {
+	prefix: string[];
+	postfix: string[];
+};

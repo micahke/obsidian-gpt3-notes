@@ -12,7 +12,6 @@ import {
 } from "obsidian";
 import { models } from "SettingsView";
 import { GPT3ModelParams, GPTHistoryItem } from "types";
-import data from "../prompts.json";
 
 export class PluginModal extends Modal {
 	prompt: string;
@@ -81,8 +80,16 @@ export class PluginModal extends Modal {
 		const dropdownsDiv = container.createDiv();
 		dropdownsDiv.className = "gpt_dropdowns-div";
 
-		this.tokenSection(dropdownsDiv, "Prefix", data.prefix);
-		this.tokenSection(dropdownsDiv, "Postfix", data.postfix);
+		this.tokenSection(
+			dropdownsDiv,
+			"Prefix",
+			this.plugin.settings.tokenParams.prefix
+		);
+		this.tokenSection(
+			dropdownsDiv,
+			"Postfix",
+			this.plugin.settings.tokenParams.postfix
+		);
 		this.tokenSection(
 			dropdownsDiv,
 			"Tokens",
