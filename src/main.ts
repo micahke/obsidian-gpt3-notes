@@ -20,7 +20,7 @@ interface GPT3_NOTES_SETTINGS {
 	tokenParams: TokenParams;
 }
 
-const DEFAULT_SETTINGS: GPT3_NOTES_SETTINGS = {
+export const DEFAULT_SETTINGS: GPT3_NOTES_SETTINGS = {
 	appName: "GP3_NOTES",
 	token: null,
 	model: models[0],

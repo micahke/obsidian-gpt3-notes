@@ -1,4 +1,4 @@
-import GPT3Notes from "main";
+import GPT3Notes, { DEFAULT_SETTINGS } from "main";
 import {
 	ButtonComponent,
 	DropdownComponent,
@@ -63,7 +63,7 @@ export default class SettingsView extends PluginSettingTab {
 			.setName("Delete history")
 			.setDesc("This will purge your prompt history")
 			.addButton((button: ButtonComponent) => {
-				button.setButtonText("Delete");
+				button.setButtonText("Delete History");
 				button.onClick((evt: MouseEvent) => {
 					try {
 						this.plugin.history_handler.reset();
@@ -108,6 +108,22 @@ export default class SettingsView extends PluginSettingTab {
 					this.plugin.saveSettings();
 				});
 				textArea.setValue(text);
+			});
+
+		new Setting(containerEl)
+			.setName("Reset Defaults")
+			.setDesc("Reset to plugin default settings.")
+			.addButton((button: ButtonComponent) => {
+				button.setButtonText("Reset to Defaults");
+				button.onClick((evt: MouseEvent) => {
+					try {
+						this.plugin.settings = DEFAULT_SETTINGS;
+						this.plugin.saveSettings();
+						new Notice(
+							"Default settings restored. You may need to reload the settings page."
+						);
+					} catch (e: any) {}
+				});
 			});
 	}
 
