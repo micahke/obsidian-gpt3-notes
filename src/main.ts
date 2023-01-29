@@ -64,8 +64,8 @@ export default class GPT3Notes extends Plugin {
 		);
 	}
 
-	showPreviewModal(modelParams: GPT3ModelParams, response: any) {
-		new PreviewModal(this, modelParams, response).open();
+	showPreviewModal(modelParams: GPT3ModelParams, stream: any) {
+		new PreviewModal(this, modelParams, stream).open();
 	}
 
 	// Loads the settings from memory

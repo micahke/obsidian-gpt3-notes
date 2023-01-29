@@ -2,6 +2,7 @@ import {
 	ButtonComponent,
 	MarkdownView,
 	Modal,
+	Notice,
 	TextAreaComponent,
 } from "obsidian";
 import GPT3Notes from "main";
@@ -9,13 +10,40 @@ import { GPT3ModelParams } from "types";
 
 export class PreviewModal extends Modal {
 	previewText: string;
+	previewTextArea: TextAreaComponent;
 
 	constructor(
 		private plugin: GPT3Notes,
 		private modelParams: GPT3ModelParams,
-		private modelResponse: any
+		private stream: any
 	) {
 		super(plugin.app);
+	}
+
+	syncPreview(): void {
+		this.previewTextArea.setValue(
+			this.previewText.substring(2, this.previewText.length)
+		);
+	}
+
+	loadStream(): void {
+		this.stream.addEventListener("message", (e: any) => {
+			try {
+				let data = JSON.parse(e.data);
+				let choice = data.choices[0];
+				let text = choice.text;
+				this.previewText += text as string;
+				this.syncPreview();
+			} catch (e: any) {
+				return;
+			}
+		});
+		this.stream.addEventListener("error", (e: any) => {
+			new Notice(
+				"OpenAI returned an error. Try modifying your paramters and try again."
+			);
+		});
+		this.stream.stream();
 	}
 
 	onOpen(): void {
@@ -25,13 +53,14 @@ export class PreviewModal extends Modal {
 		const container = contentEl.createDiv();
 		container.className = "gpt_preview-container";
 
-		const text: string = this.modelResponse.choices[0].text as string;
-		this.previewText = text.slice(2, text.length);
+		// const text: string = this.modelResponse.choices[0].text as string;
+		// this.previewText = text.slice(2, text.length);
+		this.previewText = "";
 
-		const previewTextArea = new TextAreaComponent(container);
-		previewTextArea.inputEl.className = "gpt_preview-textarea";
-		previewTextArea.setValue(this.previewText);
-		previewTextArea.onChange((change: string) => {
+		this.previewTextArea = new TextAreaComponent(container);
+		this.previewTextArea.inputEl.className = "gpt_preview-textarea";
+		this.previewTextArea.setPlaceholder("Loading...");
+		this.previewTextArea.onChange((change: string) => {
 			this.previewText = change;
 		});
 
@@ -59,6 +88,8 @@ export class PreviewModal extends Modal {
 				view.editor.replaceSelection(newText);
 			}
 		});
+
+		this.loadStream();
 	}
 
 	onClose(): void {}
