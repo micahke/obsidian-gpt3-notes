@@ -272,8 +272,8 @@ export class PluginModal extends Modal {
 			return;
 		}
 
-		const response = await GPT3Model.generate(token, params);
-		if (!response) {
+		const response = GPT3Model.generate(token, params);
+		if (response === false) {
 			this.generateButton.setDisabled(false);
 			this.generateButton.setButtonText("Generate Notes");
 			return;
