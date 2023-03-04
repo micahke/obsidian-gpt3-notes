@@ -7,6 +7,7 @@ import {
 } from "obsidian";
 import GPT3Notes from "main";
 import { GPT3ModelParams } from "types";
+import { models } from "SettingsView";
 
 export class PreviewModal extends Modal {
 	previewText: string;
@@ -29,10 +30,10 @@ export class PreviewModal extends Modal {
 	loadStream(): void {
 		this.stream.addEventListener("message", (e: any) => {
 			try {
-				let data = JSON.parse(e.data);
-				let choice = data.choices[0];
-				let text = choice.text;
-				this.previewText += text as string;
+				const text = this.parseTextResponse(e);
+				if (text) {
+					this.previewText += text;
+				}
 				this.syncPreview();
 			} catch (e: any) {
 				return;
@@ -44,6 +45,20 @@ export class PreviewModal extends Modal {
 			);
 		});
 		this.stream.stream();
+	}
+
+	parseTextResponse(e: any): string {
+		const modelType = models[this.modelParams.model as keyof typeof models];
+		const data = JSON.parse(e.data);
+		const choice = data.choices[0];
+
+		if (modelType === "text") {
+			return choice.text;
+		} else if (modelType === "chat") {
+			return choice.delta.content;
+		}
+
+		return "";
 	}
 
 	onOpen(): void {

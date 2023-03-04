@@ -1,9 +1,15 @@
 import { Notice, request, RequestUrlParam } from "obsidian";
 import { GPT3ModelParams } from "types";
 import { SSE } from "../lib/sse";
+import { models } from "SettingsView";
 
 export class GPT3Model {
 	constructor() {}
+
+	static endpoints = {
+		text: "https://api.openai.com/v1/completions",
+		chat: "https://api.openai.com/v1/chat/completions",
+	};
 
 	static generate(
 		token: string,
@@ -13,16 +19,17 @@ export class GPT3Model {
 		if (!retry) {
 			retry = 0;
 		}
-		let data = {
-			model: params.model,
-			prompt: params.prompt,
-			temperature: params.temperature,
-			max_tokens: params.tokens,
+		const modelType = models[
+			params.model as keyof typeof models
+		] as keyof typeof this.endpoints;
+
+		const data = {
+			...this.paramsToModelParams(params, modelType),
 			stream: true,
 		};
 		try {
 			// const response_raw = await request(request_param);
-			const stream = new SSE("https://api.openai.com/v1/completions", {
+			const stream = new SSE(this.endpoints[modelType], {
 				headers: {
 					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
@@ -45,6 +52,28 @@ export class GPT3Model {
 				new Notice("An error occured.");
 			}
 			return false;
+		}
+	}
+
+	static paramsToModelParams(params: GPT3ModelParams, modelType: string) {
+		if (modelType === "text") {
+			return {
+				prompt: params.prompt,
+				temperature: params.temperature,
+				max_tokens: params.tokens,
+				model: params.model,
+			};
+		} else if (modelType === "chat") {
+			return {
+				messages: [
+					{
+						role: "user",
+						content: params.prompt,
+					},
+				],
+				temperature: params.temperature,
+				model: params.model,
+			};
 		}
 	}
 }
