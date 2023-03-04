@@ -10,7 +10,7 @@ import {
 	Setting,
 	TextAreaComponent,
 } from "obsidian";
-import { modelsKeys } from "SettingsView";
+import { modelsKeys, models } from "SettingsView";
 import { GPT3ModelParams, GPTHistoryItem } from "types";
 
 export class PluginModal extends Modal {
@@ -136,6 +136,12 @@ export class PluginModal extends Modal {
 				});
 			});
 
+		if (
+			models[this.plugin.settings.model as keyof typeof models] === "chat"
+		) {
+			tokenSetting.settingEl.style.display = "none";
+		}
+
 		new Setting(container)
 			.setName("OpenAI Model")
 			.setDesc("The type of GPT-3 model to use.")
@@ -146,6 +152,12 @@ export class PluginModal extends Modal {
 				dropdown.onChange((change) => {
 					this.plugin.settings.model = change;
 					this.plugin.saveSettings();
+					tokenSetting.settingEl.style.display =
+						models[
+							this.plugin.settings.model as keyof typeof models
+						] === "chat"
+							? "none"
+							: "";
 				});
 				dropdown.setValue(this.plugin.settings.model);
 			});
