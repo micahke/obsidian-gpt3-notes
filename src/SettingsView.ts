@@ -9,12 +9,16 @@ import {
 	TextComponent,
 } from "obsidian";
 
-export const models = [
-	"text-davinci-003",
-	"text-curie-001",
-	"text-babbage-001",
-	"text-ada-001",
-];
+export const models = {
+	"text-davinci-003": "text",
+	"text-curie-001": "text",
+	"text-babbage-001": "text",
+	"text-ada-001": "text",
+	"gpt-3.5-turbo": "chat",
+	"gpt-3.5-turbo-0301": "chat",
+};
+
+export const modelsKeys = Object.keys(models);
 
 export default class SettingsView extends PluginSettingTab {
 	constructor(private plugin: GPT3Notes) {
@@ -50,8 +54,8 @@ export default class SettingsView extends PluginSettingTab {
 			.setName("OpenAI Model")
 			.setDesc("The type of GPT-3 model to use.")
 			.addDropdown((dropdown: DropdownComponent) => {
-				for (let model in models) {
-					dropdown.addOption(models[model], models[model]);
+				for (let model in modelsKeys) {
+					dropdown.addOption(modelsKeys[model], modelsKeys[model]);
 				}
 				dropdown.onChange((change) => {
 					this.plugin.settings.model = change;

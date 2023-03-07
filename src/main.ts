@@ -4,7 +4,7 @@ import { HistoryHandler } from "HistoryHandler";
 import { Editor, Menu, Modal, Notice, Plugin, View } from "obsidian";
 import { PluginModal } from "PluginModal";
 import { PreviewModal } from "PreviewModal";
-import SettingsView, { models } from "SettingsView";
+import SettingsView, { modelsKeys } from "SettingsView";
 import { GPT3ModelParams, GPTHistoryItem, TokenParams } from "types";
 import data from "../prompts.json";
 
@@ -23,7 +23,7 @@ interface GPT3_NOTES_SETTINGS {
 export const DEFAULT_SETTINGS: GPT3_NOTES_SETTINGS = {
 	appName: "GP3_NOTES",
 	token: null,
-	model: models[0],
+	model: modelsKeys[0],
 	tokens: 300,
 	temperature: 5,
 	promptHistory: [],
