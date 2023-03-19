@@ -1,3 +1,4 @@
+import { GPT3Model } from "GPT3";
 import {
 	ButtonComponent,
 	MarkdownView,
@@ -8,10 +9,12 @@ import {
 import GPT3Notes from "main";
 import { GPT3ModelParams } from "types";
 import { models } from "SettingsView";
+import { PluginModal } from "PluginModal";
 
 export class PreviewModal extends Modal {
 	previewText: string;
 	previewTextArea: TextAreaComponent;
+	regenerateButton: ButtonComponent;
 
 	constructor(
 		private plugin: GPT3Notes,
@@ -43,6 +46,18 @@ export class PreviewModal extends Modal {
 			new Notice(
 				"OpenAI returned an error. Try modifying your paramters and try again."
 			);
+		});
+		this.stream.addEventListener("readystatechange", (e: any) => {
+			if (e.readyState === this.stream.CLOSED) {
+				this.regenerateButton.buttonEl.style.backgroundColor =
+					"#218c74";
+				this.regenerateButton.setButtonText("Regenerate");
+			}
+			if (e.readyState === this.stream.OPEN) {
+				this.regenerateButton.buttonEl.style.backgroundColor =
+					"#b33939";
+				this.regenerateButton.setButtonText("Stop");
+			}
 		});
 		this.stream.stream();
 	}
@@ -84,13 +99,27 @@ export class PreviewModal extends Modal {
 
 		const cancelButton = new ButtonComponent(buttonContainer);
 		cancelButton.buttonEl.style.backgroundColor = "#b33939";
-		cancelButton.setButtonText("Cancel").onClick(() => {
+		cancelButton.buttonEl.style.marginRight = "auto";
+		cancelButton.setButtonText("Go Back").onClick(() => {
 			this.close();
+			new PluginModal(this.plugin, { loadLastItem: true }).open();
 		});
 
-		const generateButton = new ButtonComponent(buttonContainer);
-		generateButton.buttonEl.style.backgroundColor = "#218c74";
-		generateButton.setButtonText("Add to document").onClick(() => {
+		this.regenerateButton = new ButtonComponent(buttonContainer);
+		this.regenerateButton.buttonEl.style.backgroundColor = "#218c74";
+		this.regenerateButton.setButtonText("Regenerate").onClick(() => {
+			this.handleRegenerateClick().then((response: any) => {
+				if (response) {
+					this.previewText = "";
+					this.syncPreview();
+					this.stream.stream();
+				}
+			});
+		});
+
+		const addToDocumentButton = new ButtonComponent(buttonContainer);
+		addToDocumentButton.buttonEl.style.backgroundColor = "#218c74";
+		addToDocumentButton.setButtonText("Add to document").onClick(() => {
 			const view =
 				this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
 
@@ -108,4 +137,22 @@ export class PreviewModal extends Modal {
 	}
 
 	onClose(): void {}
+
+	async handleRegenerateClick() {
+		if (this.stream.readyState === this.stream.OPEN) {
+			this.stream.close();
+			return;
+		}
+		this.regenerateButton.setButtonText("Regenerating...");
+
+		const params: GPT3ModelParams = {
+			...this.plugin.settings.promptHistory[0],
+			model: this.plugin.settings.model,
+		};
+
+		const token = this.plugin.settings.token as string;
+
+		const response = GPT3Model.generate(token, params);
+		return response;
+	}
 }
