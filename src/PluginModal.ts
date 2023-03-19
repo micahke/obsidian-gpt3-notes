@@ -11,7 +11,7 @@ import {
 	TextAreaComponent,
 } from "obsidian";
 import { modelsKeys, models } from "SettingsView";
-import { GPT3ModelParams, GPTHistoryItem } from "types";
+import { GPT3ModelParams, GPTHistoryItem, PluginModalSettings } from "types";
 
 export class PluginModal extends Modal {
 	prompt: string;
@@ -34,7 +34,10 @@ export class PluginModal extends Modal {
 		},
 	};
 
-	constructor(private plugin: GPT3Notes) {
+	constructor(
+		private plugin: GPT3Notes,
+		private settings: PluginModalSettings = {}
+	) {
 		super(plugin.app);
 	}
 
@@ -100,6 +103,12 @@ export class PluginModal extends Modal {
 		this.promptField.inputEl.className = "gpt_prompt-field";
 
 		this.promptField.setPlaceholder("Enter your prompt...");
+
+		if (this.settings.loadLastItem) {
+			const lastItem = this.plugin.settings.promptHistory[0];
+			this.useHistoryItem(lastItem);
+		}
+
 		this.promptField.onChange((change) => {
 			this.prompt = change;
 		});

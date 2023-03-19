@@ -15,3 +15,7 @@ export type TokenParams = {
 	prefix: string[];
 	postfix: string[];
 };
+
+export type PluginModalSettings = {
+	loadLastItem?: boolean;
+};

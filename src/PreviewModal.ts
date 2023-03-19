@@ -9,6 +9,7 @@ import {
 import GPT3Notes from "main";
 import { GPT3ModelParams } from "types";
 import { models } from "SettingsView";
+import { PluginModal } from "PluginModal";
 
 export class PreviewModal extends Modal {
 	previewText: string;
@@ -98,8 +99,10 @@ export class PreviewModal extends Modal {
 
 		const cancelButton = new ButtonComponent(buttonContainer);
 		cancelButton.buttonEl.style.backgroundColor = "#b33939";
-		cancelButton.setButtonText("Cancel").onClick(() => {
+		cancelButton.buttonEl.style.marginRight = "auto";
+		cancelButton.setButtonText("Go Back").onClick(() => {
 			this.close();
+			new PluginModal(this.plugin, { loadLastItem: true }).open();
 		});
 
 		this.regenerateButton = new ButtonComponent(buttonContainer);
@@ -107,7 +110,7 @@ export class PreviewModal extends Modal {
 		this.regenerateButton.setButtonText("Regenerate").onClick(() => {
 			this.handleRegenerateClick().then((response: any) => {
 				if (response) {
-					this.previewText = ""
+					this.previewText = "";
 					this.syncPreview();
 					this.stream.stream();
 				}
