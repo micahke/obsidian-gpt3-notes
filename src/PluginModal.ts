@@ -105,7 +105,10 @@ export class PluginModal extends Modal {
 		this.promptField.setPlaceholder("Enter your prompt...");
 
 		if (this.settings.loadLastItem) {
-			const lastItem = this.plugin.settings.promptHistory[0];
+			const lastHistoryItemIndex =
+				this.plugin.settings.promptHistory.length - 1;
+			const lastItem =
+				this.plugin.settings.promptHistory[lastHistoryItemIndex];
 			this.useHistoryItem(lastItem);
 		}
 

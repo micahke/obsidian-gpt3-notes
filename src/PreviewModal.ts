@@ -145,8 +145,13 @@ export class PreviewModal extends Modal {
 		}
 		this.regenerateButton.setButtonText("Regenerating...");
 
+		const lastHistoryItemIndex =
+			this.plugin.settings.promptHistory.length - 1;
+		const lastHistoryItem =
+			this.plugin.settings.promptHistory[lastHistoryItemIndex];
+
 		const params: GPT3ModelParams = {
-			...this.plugin.settings.promptHistory[0],
+			...lastHistoryItem,
 			model: this.plugin.settings.model,
 		};
 
