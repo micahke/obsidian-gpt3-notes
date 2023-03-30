@@ -1,8 +1,12 @@
 # Obsidian GPT-3 Notes
 
+To download Obsidian: [Click here](https://www.obsidian.md)
+
+To view the plugin page: [Click here](https://obsidian.md/plugins?id=gpt3-notes)
+
 ![build](https://github.com/micahke/obsidian-gpt3-notes/actions/workflows/build.yml/badge.svg)
 
-<a href="https://www.buymeacoffee.com/mkelias" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/mkelias" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 150px !important;" ></a>
 
 This plugin improves your Obsidian workflow by helping you generate notes using OpenAI's GPT-3 language model. The plugin also has support for older language models as well.
 
