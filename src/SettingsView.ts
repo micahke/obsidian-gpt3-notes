@@ -16,6 +16,10 @@ export const models = {
 	"text-ada-001": "text",
 	"gpt-3.5-turbo": "chat",
 	"gpt-3.5-turbo-0301": "chat",
+	"gpt-4": "chat",
+	"gpt-4-0613": "chat",
+	"gpt-4-32k": "chat",
+	"gpt-4-32k-0613	": "chat",
 };
 
 export const modelsKeys = Object.keys(models);
