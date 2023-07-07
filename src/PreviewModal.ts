@@ -26,7 +26,8 @@ export class PreviewModal extends Modal {
 
 	syncPreview(): void {
 		this.previewTextArea.setValue(
-			this.previewText.substring(2, this.previewText.length)
+			// this.previewText.substring(0, this.previewText.length)
+			this.previewText
 		);
 	}
 
