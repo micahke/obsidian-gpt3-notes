@@ -1,7 +1,7 @@
 {
 	"id": "gpt3-notes",
 	"name": "GPT-3 Notes",
-	"version": "0.2.7",
+	"version": "0.2.8",
 	"minAppVersion": "0.15.0",
 	"description": "Create a note using OpenAI's GPT-3 language model.",
 	"author": "Micah Elias",

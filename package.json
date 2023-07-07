@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-gpt3-notes",
-	"version": "0.2.7",
+	"version": "0.2.8",
 	"description": "This is a plugin that generates notes using GPT-3",
 	"main": "main.js",
 	"scripts": {
