@@ -56,7 +56,9 @@ export default class SettingsView extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("API URL")
-			.setDesc("The URL to use for the API. Please note that it needs the same paths as the regular OpenAI API.")
+			.setDesc(
+				"The URL to use for the API. Please note that it needs the same paths as the regular OpenAI API."
+			)
 			.addText((text: TextComponent) => {
 				text.setPlaceholder("https://api.openai.com/v1")
 					.setValue(this.plugin.settings.apiUrl || "")
@@ -64,7 +66,7 @@ export default class SettingsView extends PluginSettingTab {
 						this.plugin.settings.apiUrl = change;
 						this.plugin.saveSettings();
 					});
-			})
+			});
 
 		new Setting(containerEl)
 			.setName("OpenAI Model")

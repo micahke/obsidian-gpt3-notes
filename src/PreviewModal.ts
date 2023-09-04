@@ -159,7 +159,11 @@ export class PreviewModal extends Modal {
 		const token = this.plugin.settings.token as string;
 		const apiUrl = this.plugin.settings.apiUrl as string;
 
-		const response = GPT3Model.generate(token, apiUrl ? apiUrl : "https://api.openai.com/v1", params);
+		const response = GPT3Model.generate(
+			token,
+			apiUrl ? apiUrl : "https://api.openai.com/v1",
+			params
+		);
 		return response;
 	}
 }

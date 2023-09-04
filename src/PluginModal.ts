@@ -297,7 +297,11 @@ export class PluginModal extends Modal {
 			return;
 		}
 
-		const response = GPT3Model.generate(token, apiUrl ? apiUrl : "https://api.openai.com/v1", params);
+		const response = GPT3Model.generate(
+			token,
+			apiUrl ? apiUrl : "https://api.openai.com/v1",
+			params
+		);
 		if (response === false) {
 			this.generateButton.setDisabled(false);
 			this.generateButton.setButtonText("Generate Notes");
