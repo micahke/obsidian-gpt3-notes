@@ -13,6 +13,7 @@ import data from "../prompts.json";
 interface GPT3_NOTES_SETTINGS {
 	appName: string;
 	token: string | null;
+	apiUrl: string | null;
 	model: string;
 	tokens: number;
 	temperature: number;
@@ -23,6 +24,7 @@ interface GPT3_NOTES_SETTINGS {
 export const DEFAULT_SETTINGS: GPT3_NOTES_SETTINGS = {
 	appName: "GP3_NOTES",
 	token: null,
+	apiUrl: null,
 	model: modelsKeys[0],
 	tokens: 300,
 	temperature: 5,
