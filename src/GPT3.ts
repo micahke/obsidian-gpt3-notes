@@ -1,4 +1,4 @@
-import { Notice, request, RequestUrlParam } from "obsidian";
+import { Notice } from "obsidian";
 import { GPT3ModelParams } from "types";
 import { SSE } from "../lib/sse";
 import { models } from "SettingsView";
@@ -7,12 +7,13 @@ export class GPT3Model {
 	constructor() {}
 
 	static endpoints = {
-		text: "https://api.openai.com/v1/completions",
-		chat: "https://api.openai.com/v1/chat/completions",
+		text: "/completions",
+		chat: "/chat/completions",
 	};
 
 	static generate(
 		token: string,
+		apiUrl: string,
 		params: GPT3ModelParams,
 		retry?: number
 	): any {
@@ -29,7 +30,7 @@ export class GPT3Model {
 		};
 		try {
 			// const response_raw = await request(request_param);
-			const stream = new SSE(this.endpoints[modelType], {
+			const stream = new SSE(apiUrl + this.endpoints[modelType], {
 				headers: {
 					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
@@ -40,7 +41,7 @@ export class GPT3Model {
 			return stream;
 		} catch (e: any) {
 			if (retry < 5) {
-				return this.generate(token, params, retry + 1);
+				return this.generate(token, apiUrl, params, retry + 1);
 			}
 			if (e.status === 429) {
 				new Notice("GPT-3 Rate limit error: please try again soon.");
