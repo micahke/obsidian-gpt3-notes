@@ -16,10 +16,12 @@ export const models = {
 	"text-ada-001": "text",
 	"gpt-3.5-turbo": "chat",
 	"gpt-3.5-turbo-0301": "chat",
+	"gpt-3.5-turbo-1106": "chat",
 	"gpt-4": "chat",
 	"gpt-4-0613": "chat",
 	"gpt-4-32k": "chat",
 	"gpt-4-32k-0613	": "chat",
+	"gpt-4-1106-preview": "chat",
 };
 
 export const modelsKeys = Object.keys(models);
@@ -34,7 +36,7 @@ export default class SettingsView extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl("h1", { text: "GPT-3 Settings" });
+		containerEl.createEl("h1", { text: "GPT Settings" });
 
 		new Setting(containerEl)
 			.setName("OpenAI API Key")
@@ -70,7 +72,7 @@ export default class SettingsView extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("OpenAI Model")
-			.setDesc("The type of GPT-3 model to use.")
+			.setDesc("The type of GPT model to use.")
 			.addDropdown((dropdown: DropdownComponent) => {
 				for (let model in modelsKeys) {
 					dropdown.addOption(modelsKeys[model], modelsKeys[model]);
